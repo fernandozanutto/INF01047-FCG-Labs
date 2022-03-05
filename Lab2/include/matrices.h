@@ -233,10 +233,11 @@ float dotproduct(glm::vec4 u, glm::vec4 v)
 }
 
 // Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.
+// Aula 8, slides 227 e 240
 glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::vec4 up_vector)
 {
-    glm::vec4 w = /* PREENCHA AQUI o cálculo do vetor w */;
-    glm::vec4 u = /* PREENCHA AQUI o cálculo do vetor u */;
+    glm::vec4 w = -view_vector;
+    glm::vec4 u = crossproduct(up_vector, w);
 
     // Normalizamos os vetores u e w
     w = w / norm(w);
@@ -266,10 +267,10 @@ glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::v
         // definido somente para argumentos que são VETORES. Não existe produto
         // escalar de PONTOS.
         //
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        ux , uy , uz , dotproduct(-u, position_c),  // LINHA 1
+        vx , vy , vz , dotproduct(-v, position_c),  // LINHA 2
+        wx , wy , wz , dotproduct(-w, position_c),  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
 
