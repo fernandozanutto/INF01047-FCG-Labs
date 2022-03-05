@@ -290,20 +290,21 @@ glm::mat4 Matrix_Orthographic(float l, float r, float b, float t, float n, float
 }
 
 // Matriz de projeção perspectiva
+// Aula 9, slides 174 e 215
 glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f)
 {
     float t = fabs(n) * tanf(field_of_view / 2.0f);
-    float b = /* PREENCHA AQUI o parâmetro b */;
+    float b = -t;
     float r = t * aspect;
-    float l = /* PREENCHA AQUI o parâmetro l */;
+    float l = -r;
 
     glm::mat4 P = Matrix(
         // PREENCHA AQUI A MATRIZ P DE PROJEÇÃO PERSPECTIVA (3D) UTILIZANDO OS
         // PARÂMETROS n e f.
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        2/(r-l) , 0.0f , 0.0f , -(r+l)/(r-l),  // LINHA 1
+        0.0f , 2/(t-b), 0.0f , -(t+b)/(t-b),  // LINHA 2
+        0.0f , 0.0f , 2/(f-n), -(f+n)/(f-n) ,  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 
     // A matriz M é a mesma computada acima em Matrix_Orthographic().
