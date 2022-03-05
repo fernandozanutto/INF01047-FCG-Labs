@@ -229,7 +229,7 @@ float dotproduct(glm::vec4 u, glm::vec4 v)
         std::exit(EXIT_FAILURE);
     }
 
-    return u1*v1 + /* PREENCHA AQUI o que falta para definir o produto escalar */;
+    return u1*v1 + u2*v2 + u3*v3;
 }
 
 // Matriz de mudança de coordenadas para o sistema de coordenadas da Câmera.
