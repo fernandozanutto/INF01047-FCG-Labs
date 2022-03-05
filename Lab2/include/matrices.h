@@ -258,15 +258,6 @@ glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::v
     float wz = w.z;
 
     return Matrix(
-        // PREENCHA AQUI A MATRIZ DE MUDANÇA DE SISTEMA DE COORDENADAS (3D)
-        // PARA AS COORDENADAS DE CÂMERA (MATRIZ VIEW HOMOGÊNEA), UTILIZANDO
-        // OS PARÂMETROS ux,uy,uz, vx,vy,vz, wx,wy,wz, position_c, origin_o,
-        // e a função dotproduct().
-        //
-        // ATENÇÃO: O produto escalar, computado pela função dotproduct(), está
-        // definido somente para argumentos que são VETORES. Não existe produto
-        // escalar de PONTOS.
-        //
         ux , uy , uz , dotproduct(-u, position_c),  // LINHA 1
         vx , vy , vz , dotproduct(-v, position_c),  // LINHA 2
         wx , wy , wz , dotproduct(-w, position_c),  // LINHA 3
@@ -299,8 +290,6 @@ glm::mat4 Matrix_Perspective(float field_of_view, float aspect, float n, float f
     float l = -r;
 
     glm::mat4 P = Matrix(
-        // PREENCHA AQUI A MATRIZ P DE PROJEÇÃO PERSPECTIVA (3D) UTILIZANDO OS
-        // PARÂMETROS n e f.
         2/(r-l) , 0.0f , 0.0f , -(r+l)/(r-l),  // LINHA 1
         0.0f , 2/(t-b), 0.0f , -(t+b)/(t-b),  // LINHA 2
         0.0f , 0.0f , 2/(f-n), -(f+n)/(f-n) ,  // LINHA 3
