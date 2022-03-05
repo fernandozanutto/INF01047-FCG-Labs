@@ -59,6 +59,7 @@ glm::mat4 Matrix_Identity()
 //
 //     T*p = p+t.
 //
+// Aula 07, slide 78
 glm::mat4 Matrix_Translate(float tx, float ty, float tz)
 {
     return Matrix(
@@ -75,6 +76,7 @@ glm::mat4 Matrix_Translate(float tx, float ty, float tz)
 //
 //     S*p = [sx*px, sy*py, sz*pz, pw].
 //
+// Aula 07, slide 78
 glm::mat4 Matrix_Scale(float sx, float sy, float sz)
 {
     return Matrix(
@@ -93,6 +95,7 @@ glm::mat4 Matrix_Scale(float sx, float sy, float sz)
 //   R*p = [ px, c*py-s*pz, s*py+c*pz, pw ];
 //
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+// Aula 07, slide 94
 glm::mat4 Matrix_Rotate_X(float angle)
 {
     float c = cos(angle);
@@ -113,13 +116,12 @@ glm::mat4 Matrix_Rotate_X(float angle)
 //   R*p = [ c*px+s*pz, py, -s*px+c*pz, pw ];
 //
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+// Aula 07, slide 95
 glm::mat4 Matrix_Rotate_Y(float angle)
 {
     float c = cos(angle);
     float s = sin(angle);
     return Matrix(
-        // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO Y EM COORD.
-        // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS c e s
         c , 0.0f , s , 0.0f ,  // LINHA 1
         0.0f , 1.0f , 0.0f , 0.0f ,  // LINHA 2
         -s , 0.0f , c , 0.0f ,  // LINHA 3
@@ -135,13 +137,12 @@ glm::mat4 Matrix_Rotate_Y(float angle)
 //   R*p = [ c*px-s*py, s*px+c*py, pz, pw ];
 //
 // onde 'c' e 's' são o cosseno e o seno do ângulo de rotação, respectivamente.
+// Aula 07, slide 91
 glm::mat4 Matrix_Rotate_Z(float angle)
 {
     float c = cos(angle);
     float s = sin(angle);
     return Matrix(
-        // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO Z EM COORD.
-        // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS c e s
         c , -s , 0.0f , 0.0f ,  // LINHA 1
         s , c , 0.0f , 0.0f ,  // LINHA 2
         0.0f , 0.0f , 1.0f , 0.0f ,  // LINHA 3
