@@ -263,10 +263,13 @@ glm::mat4 Matrix_Camera_View(glm::vec4 position_c, glm::vec4 view_vector, glm::v
     float wy = w.y;
     float wz = w.z;
 
+    glm::vec4 vector_c = position_c;
+    vector_c.w = 0.0f;
+
     return Matrix(
-        ux , uy , uz , dotproduct(-u, position_c),  // LINHA 1
-        vx , vy , vz , dotproduct(-v, position_c),  // LINHA 2
-        wx , wy , wz , dotproduct(-w, position_c),  // LINHA 3
+        ux , uy , uz , dotproduct(-u, vector_c),  // LINHA 1
+        vx , vy , vz , dotproduct(-v, vector_c),  // LINHA 2
+        wx , wy , wz , dotproduct(-w, vector_c),  // LINHA 3
         0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
