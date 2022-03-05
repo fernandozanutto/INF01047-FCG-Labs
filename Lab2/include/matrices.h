@@ -165,6 +165,7 @@ float norm(glm::vec4 v)
 // coordenadas e em torno do eixo definido pelo vetor 'axis'. Esta matriz pode
 // ser definida pela fórmula de Rodrigues. Lembre-se que o vetor que define o
 // eixo de rotação deve ser normalizado!
+// Aula 07, slides 122
 glm::mat4 Matrix_Rotate(float angle, glm::vec4 axis)
 {
     float c = cos(angle);
@@ -176,13 +177,23 @@ glm::mat4 Matrix_Rotate(float angle, glm::vec4 axis)
     float vy = v.y;
     float vz = v.z;
 
+    float m11 = vx * vx * (1 - c) + c;
+    float m12 = vx * vy * (1 - c) - vz * s;
+    float m13 = vx * vz * (1 - c) + vy*s;
+
+    float m21 = vx * vy * (1 - c) + vz * s;
+    float m22 = vy * vy * (1 - c) + c;
+    float m23 = vy * vz * (1 - c) - vx * s;
+
+    float m31 = vx * vz * (1 - c) - vy * s;
+    float m32 = vy * vz * (1 - c) + vx * s;
+    float m33 = vz * vz * (1 - c)  + c;
+
     return Matrix(
-        // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO v EM COORD.
-        // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS vx, vy, vz, c e s (FÓRMULA DE RODRIGUES)
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        m11 , m12 , m13 , 0.0f ,  // LINHA 1
+        m21 , m22 , m23 , 0.0f ,  // LINHA 2
+        m31 , m32 , m33 , 0.0f ,  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
 
