@@ -98,12 +98,10 @@ glm::mat4 Matrix_Rotate_X(float angle)
     float c = cos(angle);
     float s = sin(angle);
     return Matrix(
-        // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO X EM COORD.
-        // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS c e s
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        1.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
+        0.0f , c , -s , 0.0f ,  // LINHA 2
+        0.0f , s , c , 0.0f ,  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
 
@@ -122,10 +120,10 @@ glm::mat4 Matrix_Rotate_Y(float angle)
     return Matrix(
         // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO Y EM COORD.
         // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS c e s
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        c , 0.0f , s , 0.0f ,  // LINHA 1
+        0.0f , 1.0f , 0.0f , 0.0f ,  // LINHA 2
+        -s , 0.0f , c , 0.0f ,  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
 
@@ -144,10 +142,10 @@ glm::mat4 Matrix_Rotate_Z(float angle)
     return Matrix(
         // PREENCHA AQUI A MATRIZ DE ROTAÇÃO (3D) EM TORNO DO EIXO Z EM COORD.
         // HOMOGÊNEAS, UTILIZANDO OS PARÂMETROS c e s
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
-        0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
-        0.0f , 0.0f , 0.0f , 0.0f    // LINHA 4
+        c , -s , 0.0f , 0.0f ,  // LINHA 1
+        s , c , 0.0f , 0.0f ,  // LINHA 2
+        0.0f , 0.0f , 1.0f , 0.0f ,  // LINHA 3
+        0.0f , 0.0f , 0.0f , 1.0f    // LINHA 4
     );
 }
 
