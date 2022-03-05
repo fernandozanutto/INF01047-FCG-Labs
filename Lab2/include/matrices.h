@@ -163,7 +163,7 @@ float norm(glm::vec4 v)
     float vy = v.y;
     float vz = v.z;
 
-    return sqrt( vx*vx + /* PREENCHA AQUI o que falta para definir norma Euclidiana */ );
+    return sqrt(vx*vx + vy*vy + vz*vz);
 }
 
 // Matriz R de "rotação de um ponto" em relação à origem do sistema de
@@ -278,7 +278,7 @@ glm::mat4 Matrix_Orthographic(float l, float r, float b, float t, float n, float
 {
     glm::mat4 M = Matrix(
         // PREENCHA AQUI A MATRIZ M DE PROJEÇÃO ORTOGRÁFICA (3D) UTILIZANDO OS
-        // PARÂMETROS l,r,b,t,n,f 
+        // PARÂMETROS l,r,b,t,n,f
         0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 1
         0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 2
         0.0f , 0.0f , 0.0f , 0.0f ,  // LINHA 3
