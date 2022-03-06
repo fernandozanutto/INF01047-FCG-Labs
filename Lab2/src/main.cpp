@@ -18,7 +18,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-
+#include <iostream>
 // Headers abaixo são específicos de C++
 #include <map>
 #include <string>
@@ -73,7 +73,6 @@ void ErrorCallback(int error, const char* description);
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos);
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 // Definimos uma estrutura que armazenará dados necessários para renderizar
 // cada objeto da cena virtual.
@@ -109,9 +108,17 @@ bool g_LeftMouseButtonPressed = false;
 // usuário através do mouse (veja função CursorPosCallback()). A posição
 // efetiva da câmera é calculada dentro da função main(), dentro do loop de
 // renderização.
-float g_CameraTheta = 0.0f; // Ângulo no plano ZX em relação ao eixo Z
-float g_CameraPhi = 0.0f;   // Ângulo em relação ao eixo Y
+float g_CameraTheta = 0.7853f; // Ângulo no plano ZX em relação ao eixo Z
+float g_CameraPhi = 0.5253f;   // Ângulo em relação ao eixo Y
 float g_CameraDistance = 2.5f; // Distância da câmera para a origem
+float g_CameraX = 2.5f;
+float g_CameraY = 2.5f;
+float g_CameraZ = 2.5f;
+
+bool isMovingRight = false;
+bool isMovingForward = false;
+bool isMovingBackward = false;
+bool isMovingLeft = false;
 
 // Variável que controla o tipo de projeção utilizada: perspectiva ou ortográfica.
 bool g_UsePerspectiveProjection = true;
@@ -163,8 +170,6 @@ int main()
     glfwSetMouseButtonCallback(window, MouseButtonCallback);
     // ... ou movimentar o cursor do mouse em cima da janela ...
     glfwSetCursorPosCallback(window, CursorPosCallback);
-    // ... ou rolar a "rodinha" do mouse.
-    glfwSetScrollCallback(window, ScrollCallback);
 
     // Definimos a função de callback que será chamada sempre que a janela for
     // redimensionada, por consequência alterando o tamanho do "framebuffer"
@@ -242,6 +247,7 @@ int main()
     // Ficamos em loop, renderizando, até que o usuário feche a janela
     while (!glfwWindowShouldClose(window))
     {
+
         // Aqui executamos as operações de renderização
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
@@ -265,20 +271,46 @@ int main()
         // comentários detalhados dentro da definição de BuildTriangles().
         glBindVertexArray(vertex_array_object_id);
 
+
+
+        // Variáveis estáticas (static) mantém seus valores entre chamadas
+        // subsequentes da função!
+        static float old_seconds = (float)glfwGetTime();
+
+        // Recuperamos o número de segundos que passou desde a execução do programa
+        float seconds = (float)glfwGetTime();
+        float ellapsed_seconds = seconds - old_seconds;
+        old_seconds = seconds;
+
+        if (isMovingLeft) {
+            //g_CameraX -= 1.0f * ellapsed_seconds;
+        }
+        if (isMovingRight) {
+            //g_CameraX += 1.0f * ellapsed_seconds;
+        }
+
+        if (isMovingBackward) {
+            //g_CameraZ -= 1.0f * ellapsed_seconds;
+        }
+        if (isMovingForward) {
+            //g_CameraZ += 1.0f * ellapsed_seconds;
+        }
+
+        std::cout << "Theta: " << g_CameraTheta << " Phi: " << g_CameraPhi << std::endl;
+
         // Computamos a posição da câmera utilizando coordenadas esféricas.  As
         // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
         // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
         // e ScrollCallback().
-        float r = g_CameraDistance;
+        float r = -1.0f;
         float y = r*sin(g_CameraPhi);
         float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
         float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
         // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
         // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_position_c  = glm::vec4(x,y,z,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_lookat_l    = glm::vec4(0.0f,0.0f,0.0f,1.0f); // Ponto "l", para onde a câmera (look-at) estará sempre olhando
-        glm::vec4 camera_view_vector = camera_lookat_l - camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+        glm::vec4 camera_position_c  = glm::vec4(g_CameraX,g_CameraY,g_CameraZ,1.0f); // Ponto "c", centro da câmera
+        glm::vec4 camera_view_vector = glm::vec4(x, y, z, 0.0f);; //- camera_position_c; // Vetor "view", sentido para onde a câmera está virada
         glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
@@ -307,7 +339,7 @@ int main()
             // PARA PROJEÇÃO ORTOGRÁFICA veja slides 219-224 do documento Aula_09_Projecoes.pdf.
             // Para simular um "zoom" ortográfico, computamos o valor de "t"
             // utilizando a variável g_CameraDistance.
-            float t = 1.5f*g_CameraDistance/2.5f;
+            float t = 1.5f;
             float b = -t;
             float r = t*g_ScreenRatio;
             float l = -r;
@@ -987,23 +1019,6 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
     g_LastCursorPosY = ypos;
 }
 
-// Função callback chamada sempre que o usuário movimenta a "rodinha" do mouse.
-void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
-    // Atualizamos a distância da câmera para a origem utilizando a
-    // movimentação da "rodinha", simulando um ZOOM.
-    g_CameraDistance -= 0.1f*yoffset;
-
-    // Uma câmera look-at nunca pode estar exatamente "em cima" do ponto para
-    // onde ela está olhando, pois isto gera problemas de divisão por zero na
-    // definição do sistema de coordenadas da câmera. Isto é, a variável abaixo
-    // nunca pode ser zero. Versões anteriores deste código possuíam este bug,
-    // o qual foi detectado pelo aluno Vinicius Fraga (2017/2).
-    const float verysmallnumber = std::numeric_limits<float>::epsilon();
-    if (g_CameraDistance < verysmallnumber)
-        g_CameraDistance = verysmallnumber;
-}
-
 // Definição da função que será chamada sempre que o usuário pressionar alguma
 // tecla do teclado. Veja http://www.glfw.org/docs/latest/input_guide.html#input_key
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
@@ -1068,6 +1083,44 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
     if (key == GLFW_KEY_H && action == GLFW_PRESS)
     {
         g_ShowInfoText = !g_ShowInfoText;
+    }
+
+    // Se o usuário apertar a tecla W, move a câmera para frente
+    if (key == GLFW_KEY_W) {
+        if (action == GLFW_PRESS) {
+            isMovingForward = true;
+        } else if (action == GLFW_RELEASE) {
+            isMovingForward = false;
+        }
+    }
+
+    // Se o usuário apertar a tecla A, move a câmera para a esquerda
+    if (key == GLFW_KEY_A) {
+        if (action == GLFW_PRESS) {
+            isMovingLeft = true;
+        } else if (action == GLFW_RELEASE) {
+            isMovingLeft = false;
+        }
+    }
+
+    // Se o usuário apertar a tecla S, move a câmera para trás
+    if (key == GLFW_KEY_S) {
+        std::cout << "Tecla S" << std::endl;
+        if (action == GLFW_PRESS) {
+            isMovingBackward = true;
+        } else if (action == GLFW_RELEASE) {
+            isMovingBackward = false;
+        }
+    }
+
+    // Se o usuário apertar a tecla D, move a câmera para a direita
+    if (key == GLFW_KEY_D) {
+            std::cout << "Tecla D" << std::endl;
+        if (action == GLFW_PRESS) {
+            isMovingRight = true;
+        } else if (action == GLFW_RELEASE) {
+            isMovingRight = false;
+        }
     }
 }
 
