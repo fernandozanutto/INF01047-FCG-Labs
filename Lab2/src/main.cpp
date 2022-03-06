@@ -18,7 +18,6 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <iostream>
 // Headers abaixo são específicos de C++
 #include <map>
 #include <string>
@@ -271,7 +270,28 @@ int main()
         // comentários detalhados dentro da definição de BuildTriangles().
         glBindVertexArray(vertex_array_object_id);
 
+        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
+        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
+        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
+        // e ScrollCallback().
+        float r = -1.0f;
+        float y = r*sin(g_CameraPhi);
+        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
+        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
 
+        float g_CameraTheta2 = g_CameraTheta;
+        g_CameraTheta2 -= 3.141592f/2;
+        float z2 = r*cos(g_CameraPhi)*cos(g_CameraTheta2);
+        float x2 = r*cos(g_CameraPhi)*sin(g_CameraTheta2);
+
+        // Abaixo definimos as variáveis que efetivamente definem a câmera virtual.
+        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
+        glm::vec4 camera_position_c  = glm::vec4(g_CameraX,g_CameraY,g_CameraZ,1.0f); // Ponto "c", centro da câmera
+        glm::vec4 camera_view_vector = glm::vec4(x, y, z, 0.0f); //- camera_position_c; // Vetor "view", sentido para onde a câmera está virada
+        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
+
+        glm::vec4 camera_forward_vetor = camera_view_vector;
+        glm::vec4 camera_left_vetor = glm::vec4(x2, y, z2, 0.0f);
 
         // Variáveis estáticas (static) mantém seus valores entre chamadas
         // subsequentes da função!
@@ -283,35 +303,23 @@ int main()
         old_seconds = seconds;
 
         if (isMovingLeft) {
-            //g_CameraX -= 1.0f * ellapsed_seconds;
+            g_CameraX -= camera_left_vetor.x * ellapsed_seconds;
+            g_CameraZ -= camera_left_vetor.z * ellapsed_seconds;
         }
         if (isMovingRight) {
-            //g_CameraX += 1.0f * ellapsed_seconds;
+            g_CameraX += camera_left_vetor.x * ellapsed_seconds;
+            g_CameraZ += camera_left_vetor.z * ellapsed_seconds;
         }
-
         if (isMovingBackward) {
-            //g_CameraZ -= 1.0f * ellapsed_seconds;
+            g_CameraX -= camera_forward_vetor.x * ellapsed_seconds;
+            g_CameraY -= camera_forward_vetor.y * ellapsed_seconds;
+            g_CameraZ -= camera_forward_vetor.z * ellapsed_seconds;
         }
         if (isMovingForward) {
-            //g_CameraZ += 1.0f * ellapsed_seconds;
+            g_CameraX += camera_forward_vetor.x * ellapsed_seconds;
+            g_CameraY += camera_forward_vetor.y * ellapsed_seconds;
+            g_CameraZ += camera_forward_vetor.z * ellapsed_seconds;
         }
-
-        std::cout << "Theta: " << g_CameraTheta << " Phi: " << g_CameraPhi << std::endl;
-
-        // Computamos a posição da câmera utilizando coordenadas esféricas.  As
-        // variáveis g_CameraDistance, g_CameraPhi, e g_CameraTheta são
-        // controladas pelo mouse do usuário. Veja as funções CursorPosCallback()
-        // e ScrollCallback().
-        float r = -1.0f;
-        float y = r*sin(g_CameraPhi);
-        float z = r*cos(g_CameraPhi)*cos(g_CameraTheta);
-        float x = r*cos(g_CameraPhi)*sin(g_CameraTheta);
-
-        // Abaixo definimos as varáveis que efetivamente definem a câmera virtual.
-        // Veja slides 195-227 e 229-234 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
-        glm::vec4 camera_position_c  = glm::vec4(g_CameraX,g_CameraY,g_CameraZ,1.0f); // Ponto "c", centro da câmera
-        glm::vec4 camera_view_vector = glm::vec4(x, y, z, 0.0f);; //- camera_position_c; // Vetor "view", sentido para onde a câmera está virada
-        glm::vec4 camera_up_vector   = glm::vec4(0.0f,1.0f,0.0f,0.0f); // Vetor "up" fixado para apontar para o "céu" (eito Y global)
 
         // Computamos a matriz "View" utilizando os parâmetros da câmera para
         // definir o sistema de coordenadas da câmera.  Veja slides 2-14, 184-190 e 236-242 do documento Aula_08_Sistemas_de_Coordenadas.pdf.
@@ -1105,7 +1113,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
     // Se o usuário apertar a tecla S, move a câmera para trás
     if (key == GLFW_KEY_S) {
-        std::cout << "Tecla S" << std::endl;
         if (action == GLFW_PRESS) {
             isMovingBackward = true;
         } else if (action == GLFW_RELEASE) {
@@ -1115,7 +1122,6 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mod)
 
     // Se o usuário apertar a tecla D, move a câmera para a direita
     if (key == GLFW_KEY_D) {
-            std::cout << "Tecla D" << std::endl;
         if (action == GLFW_PRESS) {
             isMovingRight = true;
         } else if (action == GLFW_RELEASE) {
