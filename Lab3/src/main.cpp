@@ -167,7 +167,7 @@ int main()
     // Criamos uma janela do sistema operacional, com 800 colunas e 800 linhas
     // de pixels, e com título "INF01047 ...".
     GLFWwindow* window;
-    window = glfwCreateWindow(800, 800, "INF01047 - Seu Cartao - Seu Nome", NULL, NULL);
+    window = glfwCreateWindow(800, 800, "INF01047 - 302340 - Fernando Zanutto", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -269,7 +269,7 @@ int main()
         // Aqui executamos as operações de renderização
 
         // Definimos a cor do "fundo" do framebuffer como branco.  Tal cor é
-        // definida como coeficientes RGBA: Red, Green, Blue, Alpha; isto é:
+        // definida como coeficientes RGBA: Red, Green, Blue, Alpha;F isto é:
         // Vermelho, Verde, Azul, Alpha (valor de transparência).
         // Conversaremos sobre sistemas de cores nas aulas de Modelos de Iluminação.
         //
@@ -377,6 +377,21 @@ int main()
         // Tiramos da pilha a matriz model guardada anteriormente
         PopMatrix(model);
 
+        // CABEÇA
+        PushMatrix(model); // Guardamos matriz model atual na pilha
+            model = model * Matrix_Translate(0.0f, 0.05f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com uma translação para o braço direito
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model // Atualizamos matriz model (multiplicação à direita) com a rotação do braço direito
+                      * Matrix_Scale(-0.3f, -0.3f, 0.3f)
+                      * Matrix_Rotate_Z(g_AngleZ)  // TERCEIRO rotação Z de Euler
+                      * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
+                      * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
+                glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                DrawCube(render_as_black_uniform); // #### Desenhamos a Cabeça
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+        PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+
+        // BRAÇO DIREITO
         PushMatrix(model); // Guardamos matriz model atual na pilha
             model = model * Matrix_Translate(-0.55f, 0.0f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com uma translação para o braço direito
             PushMatrix(model); // Guardamos matriz model atual na pilha
@@ -399,9 +414,98 @@ int main()
                         glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
                         DrawCube(render_as_black_uniform); // #### ANTEBRAÇO DIREITO // Desenhamos o antebraço direito
                     PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+                    PushMatrix(model);
+                        model = model * Matrix_Translate(0.0f, -0.65f, 0.0f);
+                        model = model * Matrix_Scale(0.2f, 0.1f, 0.2f);
+                        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                        DrawCube(render_as_black_uniform); // #### MÃO DIREITA // Desenhamos o antebraço direito
+                    PopMatrix(model);
                 PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
             PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
         PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+
+        // BRAÇO ESQUERDO
+        PushMatrix(model); // Guardamos matriz model atual na pilha
+            model = model * Matrix_Translate(0.55f, 0.0f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com uma translação para o braço direito
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model // Atualizamos matriz model (multiplicação à direita) com a rotação do braço direito
+                      * Matrix_Rotate_Z(-g_AngleZ)  // TERCEIRO rotação Z de Euler
+                      * Matrix_Rotate_Y(g_AngleY)  // SEGUNDO rotação Y de Euler
+                      * Matrix_Rotate_X(g_AngleX); // PRIMEIRO rotação X de Euler
+                PushMatrix(model); // Guardamos matriz model atual na pilha
+                    model = model * Matrix_Scale(0.2f, 0.6f, 0.2f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do braço direito
+                    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                    DrawCube(render_as_black_uniform); // #### BRAÇO DIREITO // Desenhamos o braço direito
+                PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+                PushMatrix(model); // Guardamos matriz model atual na pilha
+                    model = model * Matrix_Translate(0.0f, -0.65f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com a translação do antebraço direito
+                    model = model // Atualizamos matriz model (multiplicação à direita) com a rotação do antebraço direito
+                          * Matrix_Rotate_Z(-g_ForearmAngleZ)  // SEGUNDO rotação Z de Euler
+                          * Matrix_Rotate_X(g_ForearmAngleX); // PRIMEIRO rotação X de Euler
+                    PushMatrix(model); // Guardamos matriz model atual na pilha
+                        model = model * Matrix_Scale(0.2f, 0.6f, 0.2f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do antebraço direito
+                        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                        DrawCube(render_as_black_uniform); // #### ANTEBRAÇO DIREITO // Desenhamos o antebraço direito
+                    PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+                    PushMatrix(model);
+                        model = model * Matrix_Translate(0.0f, -0.65f, 0.0f);
+                        model = model * Matrix_Scale(0.2f, 0.1f, 0.2f);
+                        glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                        DrawCube(render_as_black_uniform); // #### ANTEBRAÇO DIREITO // Desenhamos o antebraço direito
+                    PopMatrix(model);
+                PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+        PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+
+        // PERNA DIREITA
+        PushMatrix(model); // Guardamos matriz model atual na pilha
+            model = model * Matrix_Translate(-0.2f, -1.05f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com uma translação para o braço direito
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model * Matrix_Scale(0.3f, 0.7f, 0.3f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do braço direito
+                glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                DrawCube(render_as_black_uniform); // #### Desenha PERNA SUPERIOR DIREITA
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model * Matrix_Translate(0.0f, -0.75f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com a translação do antebraço direito
+                PushMatrix(model); // Guardamos matriz model atual na pilha
+                    model = model * Matrix_Scale(0.25f, 0.7f, 0.2f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do antebraço direito
+                    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                    DrawCube(render_as_black_uniform); // #### DESENHA PERNA INFERIOR DIREITA
+                PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+                PushMatrix(model);
+                    model = model * Matrix_Translate(0.0f, -0.75f, 0.1f);
+                    model = model * Matrix_Scale(0.2f, 0.1f, 0.5f);
+                    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                    DrawCube(render_as_black_uniform); // #### DESENHA PÉ DIREITO
+                PopMatrix(model);
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+        PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+
+        // PERNA ESQUERDO
+        PushMatrix(model); // Guardamos matriz model atual na pilha
+            model = model * Matrix_Translate(0.2f, -1.05f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com uma translação para o braço direito
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model * Matrix_Scale(0.3f, 0.7f, 0.3f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do braço direito
+                glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                DrawCube(render_as_black_uniform); // #### DESENHA PERNA SUPERIOR DIREITA
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+            PushMatrix(model); // Guardamos matriz model atual na pilha
+                model = model * Matrix_Translate(0.0f, -0.75f, 0.0f); // Atualizamos matriz model (multiplicação à direita) com a translação do antebraço direito
+                PushMatrix(model); // Guardamos matriz model atual na pilha
+                    model = model * Matrix_Scale(0.25f, 0.7f, 0.2f); // Atualizamos matriz model (multiplicação à direita) com um escalamento do antebraço direito
+                    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                    DrawCube(render_as_black_uniform); // #### DESENHA PERNA INFERIOR ESQUERDA
+                PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+                PushMatrix(model);
+                    model = model * Matrix_Translate(0.0f, -0.75f, 0.1f);
+                    model = model * Matrix_Scale(0.2f, 0.1f, 0.5f);
+                    glUniformMatrix4fv(model_uniform, 1, GL_FALSE, glm::value_ptr(model)); // Enviamos matriz model atual para a GPU
+                    DrawCube(render_as_black_uniform); // Desenha Pé Esquerdo
+                PopMatrix(model);
+            PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+        PopMatrix(model); // Tiramos da pilha a matriz model guardada anteriormente
+
+
 
         // Neste ponto a matriz model recuperada é a matriz inicial (translação do torso)
 
@@ -716,30 +820,30 @@ GLuint BuildTriangles()
     // Definimos os índices dos vértices que definem as FACES de um cubo
     // através de 12 triângulos que serão desenhados com o modo de renderização
     // GL_TRIANGLES.
-        0, 1, 2, // triângulo 1 
-        7, 6, 5, // triângulo 2 
-        3, 2, 6, // triângulo 3 
-        4, 0, 3, // triângulo 4 
-        4, 5, 1, // triângulo 5 
-        1, 5, 6, // triângulo 6 
-        0, 2, 3, // triângulo 7 
-        7, 5, 4, // triângulo 8 
-        3, 6, 7, // triângulo 9 
+        0, 1, 2, // triângulo 1
+        7, 6, 5, // triângulo 2
+        3, 2, 6, // triângulo 3
+        4, 0, 3, // triângulo 4
+        4, 5, 1, // triângulo 5
+        1, 5, 6, // triângulo 6
+        0, 2, 3, // triângulo 7
+        7, 5, 4, // triângulo 8
+        3, 6, 7, // triângulo 9
         4, 3, 7, // triângulo 10
         4, 1, 0, // triângulo 11
         1, 6, 2, // triângulo 12
     // Definimos os índices dos vértices que definem as ARESTAS de um cubo
     // através de 12 linhas que serão desenhadas com o modo de renderização
     // GL_LINES.
-        0, 1, // linha 1 
-        1, 2, // linha 2 
-        2, 3, // linha 3 
-        3, 0, // linha 4 
-        0, 4, // linha 5 
-        4, 7, // linha 6 
-        7, 6, // linha 7 
-        6, 2, // linha 8 
-        6, 5, // linha 9 
+        0, 1, // linha 1
+        1, 2, // linha 2
+        2, 3, // linha 3
+        3, 0, // linha 4
+        0, 4, // linha 5
+        4, 7, // linha 6
+        7, 6, // linha 7
+        6, 2, // linha 8
+        6, 5, // linha 9
         5, 4, // linha 10
         5, 1, // linha 11
         7, 3, // linha 12
@@ -1048,21 +1152,21 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
-    
+
         // Atualizamos parâmetros da câmera com os deslocamentos
         g_CameraTheta -= 0.01f*dx;
         g_CameraPhi   += 0.01f*dy;
-    
+
         // Em coordenadas esféricas, o ângulo phi deve ficar entre -pi/2 e +pi/2.
         float phimax = 3.141592f/2;
         float phimin = -phimax;
-    
+
         if (g_CameraPhi > phimax)
             g_CameraPhi = phimax;
-    
+
         if (g_CameraPhi < phimin)
             g_CameraPhi = phimin;
-    
+
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
         g_LastCursorPosX = xpos;
@@ -1074,11 +1178,11 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
-    
+
         // Atualizamos parâmetros da antebraço com os deslocamentos
         g_ForearmAngleZ -= 0.01f*dx;
         g_ForearmAngleX += 0.01f*dy;
-    
+
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
         g_LastCursorPosX = xpos;
@@ -1090,11 +1194,11 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
         // Deslocamento do cursor do mouse em x e y de coordenadas de tela!
         float dx = xpos - g_LastCursorPosX;
         float dy = ypos - g_LastCursorPosY;
-    
+
         // Atualizamos parâmetros da antebraço com os deslocamentos
         g_TorsoPositionX += 0.01f*dx;
         g_TorsoPositionY -= 0.01f*dy;
-    
+
         // Atualizamos as variáveis globais para armazenar a posição atual do
         // cursor como sendo a última posição conhecida do cursor.
         g_LastCursorPosX = xpos;
@@ -1313,7 +1417,7 @@ void TextRendering_ShowFramesPerSecond(GLFWwindow* window)
     if ( ellapsed_seconds > 1.0f )
     {
         numchars = snprintf(buffer, 20, "%.2f fps", ellapsed_frames / ellapsed_seconds);
-    
+
         old_seconds = seconds;
         ellapsed_frames = 0;
     }
