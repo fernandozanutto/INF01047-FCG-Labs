@@ -391,6 +391,13 @@ int main(int argc, char* argv[])
         glUniform1i(object_id_uniform, BUNNY);
         DrawVirtualObject("bunny");
 
+        // Desenhamos o modelo do plano
+        model = Matrix_Translate(0.0f,-1.0f,0.0f)
+              * Matrix_Scale(2.0f, 1.0f, 2.0f);
+        glUniformMatrix4fv(model_uniform, 1 , GL_FALSE , glm::value_ptr(model));
+        glUniform1i(object_id_uniform, PLANE);
+        DrawVirtualObject("plane");
+
         // Pegamos um vértice com coordenadas de modelo (0.5, 0.5, 0.5, 1) e o
         // passamos por todos os sistemas de coordenadas armazenados nas
         // matrizes the_model, the_view, e the_projection; e escrevemos na tela
@@ -560,7 +567,6 @@ void ComputeNormals(ObjModel* model)
 
             // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
             // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
-
             glm::vec4 normal = crossproduct(b - a, c - a);
             normal = normal / norm(normal);
 

@@ -46,7 +46,7 @@ void main()
     vec4 v = normalize(camera_position - p);
 
     // Vetor que define o sentido da reflexão especular ideal.
-    vec4 r = vec4(0.0,0.0,0.0,0.0); // PREENCHA AQUI o vetor de reflexão especular ideal
+    vec4 r = -l + 2 * n * dot(n, l); // PREENCHA AQUI o vetor de reflexão especular ideal
 
     // Parâmetros que definem as propriedades espectrais da superfície
     vec3 Kd; // Refletância difusa
@@ -58,28 +58,28 @@ void main()
     {
         // PREENCHA AQUI
         // Propriedades espectrais da esfera
-        Kd = vec3(0.0,0.0,0.0);
+        Kd = vec3(0.8,0.4,0.08);
         Ks = vec3(0.0,0.0,0.0);
-        Ka = vec3(0.0,0.0,0.0);
+        Ka = Kd / 2;
         q = 1.0;
     }
     else if ( object_id == BUNNY )
     {
         // PREENCHA AQUI
         // Propriedades espectrais do coelho
-        Kd = vec3(0.0,0.0,0.0);
-        Ks = vec3(0.0,0.0,0.0);
-        Ka = vec3(0.0,0.0,0.0);
-        q = 1.0;
+        Kd = vec3(0.08,0.4,0.8);
+        Ks = vec3(0.8,0.8,0.8);
+        Ka = Kd / 2;
+        q = 32.0;
     }
     else if ( object_id == PLANE )
     {
         // PREENCHA AQUI
         // Propriedades espectrais do plano
-        Kd = vec3(0.0,0.0,0.0);
-        Ks = vec3(0.0,0.0,0.0);
+        Kd = vec3(0.2,0.2,0.2);
+        Ks = vec3(0.3,0.3,0.3);
         Ka = vec3(0.0,0.0,0.0);
-        q = 1.0;
+        q = 20.0;
     }
     else // Objeto desconhecido = preto
     {
@@ -90,19 +90,19 @@ void main()
     }
 
     // Espectro da fonte de iluminação
-    vec3 I = vec3(0.0,0.0,0.0); // PREENCH AQUI o espectro da fonte de luz
+    vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
 
     // Espectro da luz ambiente
-    vec3 Ia = vec3(0.0,0.0,0.0); // PREENCHA AQUI o espectro da luz ambiente
+    vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
 
     // Termo difuso utilizando a lei dos cossenos de Lambert
-    vec3 lambert_diffuse_term = vec3(0.0,0.0,0.0); // PREENCHA AQUI o termo difuso de Lambert
+    vec3 lambert_diffuse_term = Kd*I*max(0, dot(n, l)); // PREENCHA AQUI o termo difuso de Lambert
 
     // Termo ambiente
-    vec3 ambient_term = vec3(0.0,0.0,0.0); // PREENCHA AQUI o termo ambiente
+    vec3 ambient_term = Ka * Ia; // PREENCHA AQUI o termo ambiente
 
     // Termo especular utilizando o modelo de iluminação de Phong
-    vec3 phong_specular_term  = vec3(0.0,0.0,0.0); // PREENCH AQUI o termo especular de Phong
+    vec3 phong_specular_term  = Ks * I * pow(max(0, dot(r,v)), q); // PREENCH AQUI o termo especular de Phong
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
@@ -125,5 +125,5 @@ void main()
     // Cor final com correção gamma, considerando monitor sRGB.
     // Veja https://en.wikipedia.org/w/index.php?title=Gamma_correction&oldid=751281772#Windows.2C_Mac.2C_sRGB_and_TV.2Fvideo_standard_gammas
     color.rgb = pow(color.rgb, vec3(1.0,1.0,1.0)/2.2);
-} 
+}
 
