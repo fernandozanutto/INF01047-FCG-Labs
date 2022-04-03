@@ -27,7 +27,9 @@ void main()
     // sistema de coordenadas da câmera.
     vec4 origin = vec4(0.0, 0.0, 0.0, 1.0);
     vec4 camera_position = inverse(view) * origin;
-    vec4 light_position = camera_position;
+    vec4 light_position = vec4(0.0f, 2.0f, 1.0f, 1.0f);
+    vec4 light_direction = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+    float light_angle = 30.0f;
 
     // O fragmento atual é coberto por um ponto que percente à superfície de um
     // dos objetos virtuais da cena. Este ponto, p, possui uma posição no
@@ -92,6 +94,12 @@ void main()
 
     // Espectro da fonte de iluminação
     vec3 I = vec3(1.0,1.0,1.0); // PREENCH AQUI o espectro da fonte de luz
+
+    vec4 a = normalize(p - light_position);
+    vec4 b = normalize(light_direction);
+    if (dot(a, b) < sqrt(3)/2) { // sqrt(3) / 2 = cos(30)
+        I = vec3(0.0,0.0,0.0);
+    }
 
     // Espectro da luz ambiente
     vec3 Ia = vec3(0.2,0.2,0.2); // PREENCHA AQUI o espectro da luz ambiente
