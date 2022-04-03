@@ -560,7 +560,11 @@ void ComputeNormals(ObjModel* model)
 
             // PREENCHA AQUI o cálculo da normal de um triângulo cujos vértices
             // estão nos pontos "a", "b", e "c", definidos no sentido anti-horário.
-            const glm::vec4  n = glm::vec4(0.0f,0.0f,0.0f,0.0f);
+
+            glm::vec4 normal = crossproduct(b - a, c - a);
+            normal = normal / norm(normal);
+
+            const glm::vec4  n = glm::vec4(normal.x, normal.y, normal.z, 0.0f);
 
             for (size_t vertex = 0; vertex < 3; ++vertex)
             {
