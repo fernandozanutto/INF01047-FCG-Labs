@@ -131,13 +131,10 @@ void main()
     // Obtemos a refletância difusa a partir da leitura da imagem TextureImage0
     vec3 Kd0 = texture(TextureImage0, vec2(U,V)).rgb;
 
-    vec3 Kd1 = texture(TextureImage1, vec2(U,V)).rgb;
-
     // Equação de Iluminação
     float lambert = max(0,dot(n,l));
-    float lambert2 = max(0,dot(-n,l));
 
-    color.rgb = (Kd0 * (lambert + 0.01)) + (Kd1 * (lambert2 + 0.05));
+    color.rgb = Kd0 * (lambert + 0.01);
 
     // NOTE: Se você quiser fazer o rendering de objetos transparentes, é
     // necessário:
